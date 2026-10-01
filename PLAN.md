@@ -117,11 +117,11 @@
 git clone https://github.com/suapapa/quotefancy-livewallpaper.git
 cd quotefancy-livewallpaper
 brew install uv
-uv run --with-requirements requirements.txt build_index.py  # 명언 인덱스 생성 (이미지 없음, ~13초)
+uv run build_index.py       # 명언 인덱스 생성 (이미지 없음, ~13초)
 ./install.sh                 # 30분마다 자동 변경 (주기 변경: ./install.sh 600)
 ```
 
-배경화면을 즉시 바꿔보려면: `uv run --with-requirements requirements.txt change_wallpaper.py`
+배경화면을 즉시 바꿔보려면: `uv run change_wallpaper.py`
 
 ---
 

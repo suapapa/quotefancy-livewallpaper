@@ -29,7 +29,7 @@ fi
 INTERVAL="${1:-}"
 if [[ -z "$INTERVAL" ]]; then
   # config.yaml에서 change_interval_seconds 추출 (없으면 1800)
-  INTERVAL=$("$UV_BIN" run --no-project --with-requirements "${SCRIPT_DIR}/requirements.txt" python -c 'import sys, yaml; print(yaml.safe_load(open(sys.argv[1])).get("change_interval_seconds", 1800))' "${SCRIPT_DIR}/config.yaml")
+  INTERVAL=$("$UV_BIN" run --project "$SCRIPT_DIR" python -c 'import sys, yaml; print(yaml.safe_load(open(sys.argv[1])).get("change_interval_seconds", 1800))' "${SCRIPT_DIR}/config.yaml")
 fi
 
 mkdir -p "$HOME/Library/LaunchAgents"
@@ -45,9 +45,8 @@ cat > "$PLIST_PATH" <<EOF
     <array>
         <string>${UV_BIN}</string>
         <string>run</string>
-        <string>--no-project</string>
-        <string>--with-requirements</string>
-        <string>${SCRIPT_DIR}/requirements.txt</string>
+        <string>--project</string>
+        <string>${SCRIPT_DIR}</string>
         <string>${SCRIPT_DIR}/change_wallpaper.py</string>
         <string>--config</string>
         <string>${SCRIPT_DIR}/config.yaml</string>

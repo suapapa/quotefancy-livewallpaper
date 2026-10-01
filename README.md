@@ -31,23 +31,23 @@ brew install uv
 ### 2. 명언 인덱스 생성
 
 ```bash
-uv run --with-requirements requirements.txt build_index.py
+uv run build_index.py
 ```
 
 기본 guru는 `config.yaml`의 `gurus`에 적혀 있습니다. 원하는 guru로 바꿔 쓰면 됩니다.
 
 ```bash
 # 특정 guru만 인덱스 생성
-uv run --with-requirements requirements.txt build_index.py --guru bruce-lee-quotes
+uv run build_index.py --guru bruce-lee-quotes
 ```
 
 ### 3. 배경화면 바꿔보기
 
 ```bash
-uv run --with-requirements requirements.txt change_wallpaper.py            # 무작위 1장 (인덱스 없으면 자동 생성)
-uv run --with-requirements requirements.txt change_wallpaper.py --guru jocko-willink-quotes
-uv run --with-requirements requirements.txt change_wallpaper.py --list     # 인덱스에 있는 명언 수 확인
-uv run --with-requirements requirements.txt change_wallpaper.py --build-index   # 인덱스만 갱신
+uv run change_wallpaper.py                # 무작위 1장 (인덱스 없으면 자동 생성)
+uv run change_wallpaper.py --guru jocko-willink-quotes
+uv run change_wallpaper.py --list         # 인덱스에 있는 명언 수 확인
+uv run change_wallpaper.py --build-index  # 인덱스만 갱신
 ```
 
 > 처음 실행할 때 macOS가 "자동화 권한"을 요청할 수 있습니다. 배경화면을 바꾸려면 허용해 주세요.
@@ -97,7 +97,8 @@ quotefancy-livewallpaper/
 ├── README.md
 ├── PLAN.md                 # 사이트 구조 분석 + 작업 계획
 ├── config.yaml             # guru/주기/경로 설정
-├── requirements.txt        # Python 의존성
+├── pyproject.toml          # Python 의존성
+├── uv.lock                 # 잠긴 의존성 버전
 ├── build_index.py          # 명언 ID 인덱스 생성 (이미지 없음)
 ├── change_wallpaper.py     # 무작위 선택 + on-demand 다운로드 + 배경화면 적용
 ├── install.sh              # launchd 등록

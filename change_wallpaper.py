@@ -9,9 +9,9 @@ QuoteFancy 무작위 배경화면 적용기 — on-demand 다운로드 방식 (P
   4. 캐시가 max_cache_per_guru 를 초과하면 오래된 것부터 정리
 
 사용법:
-    uv run --with-requirements requirements.txt change_wallpaper.py                # 무작위 1장 적용
-    uv run --with-requirements requirements.txt change_wallpaper.py --list         # 인덱스에 있는 명언 수 확인
-    uv run --with-requirements requirements.txt change_wallpaper.py --build-index  # 인덱스만 갱신
+    uv run change_wallpaper.py                # 무작위 1장 적용
+    uv run change_wallpaper.py --list         # 인덱스에 있는 명언 수 확인
+    uv run change_wallpaper.py --build-index  # 인덱스만 갱신
 """
 
 import argparse

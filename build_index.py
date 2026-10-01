@@ -7,8 +7,8 @@ quotes_index.json 에 저장한다. 배경화면 변경 시 필요한 1장만 �
 on-demand 방식의 기반이 된다. (bulk 다운로드 없이 수 초면 완료)
 
 사용법:
-    uv run --with-requirements requirements.txt build_index.py  # config.yaml 기준
-    uv run --with-requirements requirements.txt build_index.py --guru bruce-lee-quotes
+    uv run build_index.py  # config.yaml 기준
+    uv run build_index.py --guru bruce-lee-quotes
 """
 
 import argparse
