@@ -3,10 +3,11 @@
     "bruce-lee-quotes",
     "jocko-willink-quotes"
   ],
-  "resolution": "original",
   "wallpaper_dir": "wallpapers",
+  "index_file": "quotes_index.json",
   "log_dir": "logs",
   "change_interval_seconds": 1800,
-  "request_delay_seconds": 1.5,
+  "max_cache_per_guru": 40,
+  "request_delay_seconds": 1.0,
   "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
 }

@@ -1,6 +1,9 @@
 # 다운로드한 명언 이미지 (저작권 — git에 올리지 않음)
 wallpapers/
 
+# 명언 id 인덱스 (build_index.py 가 생성, 재생성 가능)
+quotes_index.json
+
 # 로그
 logs/
 

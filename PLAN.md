@@ -53,20 +53,25 @@
 
 ## 3. 작업 계획 (Plan)
 
-### Phase 0 — 스캐퍼 (quotefancy_scraper) ✅ 완료
-`scrape.py` 스크립트로 모든 명언의 원본(4K) 이미지를 다운로드
+### Phase 0 — 인덱스 생성기 (build_index) ✅ 완료 (on-demand 방식으로 개선)
+`build_index.py` 스크립트로 명언 id 목록만 수집 (이미지 다운로드 없음)
 
 - [x] guru slug 목록 입력 (config)
 - [x] 각 guru의 전체 페이지네이션 순회
-- [x] 모든 명언의 `{id}` 수집
-- [x] 원본 4K 이미지 일괄 다운로드 → `wallpapers/{guru-slug}/{id}.jpg`
-- [x] 이미 다운로드한 id는 건너뛰기 (재실행 대비 incremental)
+- [x] 모든 명언의 `{id}` 수집 → `quotes_index.json` 저장 (~13초, bulk 다운로드 없음)
 - [x] 예의: 요청 간 지연(rate limiting), User-Agent 설정
 
-### Phase 1 — 무작위 선택 + 배경화면 적용 ✅ 완료
+> ⚡ **설계 변경 (왕자님 피드백 반영)**: 처음에 수백 장을 한꺼번에 받는 대신,
+> 인덱스(id 목록)만 가볍게 수집하고 배경화면 변경 시 **필요한 1장만** 다운로드한다.
+> 시간 절약 + 서버 abusing 차단 위험 회피.
+
+### Phase 1 — 무작위 선택 + on-demand 다운로드 + 배경화면 적용 ✅ 완료
 `change_wallpaper.py`
 
-- [x] `wallpapers/` 디렉터리에서 무작위 이미지 1장 선택
+- [x] `quotes_index.json` 에서 무작위 이미지 1장 선택
+- [x] 캐시에 없으면 → 그 1장만 다운로드 (bulk 다운로드 없음)
+- [x] 캐시 재사용 (이미 받은 이미지는 재다운로드 안 함)
+- [x] 캐시 정리 (`max_cache_per_guru` 초과 시 오래된 것부터 삭제)
 - [x] macOS 배경화면 변경:
   - `osascript -e 'tell application "System Events" to set picture of every desktop to POSIX file "<path>"'`
 - [x] 멀티 모니터 대응: `every desktop` → 모든 디스플레이에 적용
@@ -83,8 +88,10 @@
 `config.json`
 - [x] guru slug 리스트
 - [x] 변경 주기 (`change_interval_seconds`)
-- [x] 이미지 저장 경로 (`wallpaper_dir`)
+- [x] 이미지 캐시 경로 (`wallpaper_dir`)
+- [x] 인덱스 파일 (`index_file`)
 - [x] 로그 경로 (`log_dir`)
+- [x] 캐시 최대 개수 (`max_cache_per_guru`)
 - [x] 요청 지연 (`request_delay_seconds`)
 
 ### Phase 4 — 패키징 & 문서 ✅ 완료
@@ -96,19 +103,21 @@
 
 ## 7. 구현 결과 요약 (검증 완료)
 
-- **다운로드**: Bruce Lee 412장 + Jocko Willink 124장 = **총 536장** (전부 4K 3840×2160 확인)
-- **incremental 재실행**: 이미 다운로드한 id는 전부 스킵 (재다운로드 0)
-- **무작위 선택**: 전체 536장에서 무작위 선택 정상 동작
+- **인덱스 생성**: Bruce Lee 412 + Jocko Willink 124 = **총 536개** 명언 id (13초, 이미지 없음)
+- **on-demand 다운로드**: 배경화면 변경 시 필요한 1장만 다운로드 확인
+- **캐시 히트**: 이미 받은 이미지는 "캐시 사용"으로 재다운로드 안 함
+- **캐시 정리**: `max_cache_per_guru` 초과 시 오래된 것부터 삭제 (1장 제한 테스트 통과)
+- **무작위 선택**: 전체 536개에서 무작위 선택 정상 동작
 - **launchd**: plist 문법 검증 완료 (macOS에서 `install.sh` 실행 시 적용)
-- **참고**: Bruce Lee 제목의 "Top 400"은 표기일 뿐 실제 수집 412장, Jocko 제목 "Top 120" → 실제 124장
+- **참고**: Bruce Lee 제목의 "Top 400"은 표기일 뿐 실제 수집 412개, Jocko 제목 "Top 120" → 실제 124개
 
 ## 8. macOS에서 실제 사용 방법
 
 ```bash
 git clone https://github.com/suapapa/quotefancy-livewallpaper.git
 cd quotefancy-livewallpaper
-python3 scrape.py          # 명언 이미지 다운로드
-./install.sh               # 30분마다 자동 변경 (주기 변경: ./install.sh 600)
+python3 build_index.py       # 명언 인덱스 생성 (이미지 없음, ~13초)
+./install.sh                 # 30분마다 자동 변경 (주기 변경: ./install.sh 600)
 ```
 
 배경화면을 즉시 바꿔보려면: `python3 change_wallpaper.py`
