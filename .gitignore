@@ -1,0 +1,18 @@
+# 다운로드한 명언 이미지 (저작권 — git에 올리지 않음)
+wallpapers/
+
+# 로그
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# 로컬 설정 (개인 경로/주기)
+config.local.json
+config.local.yaml
