@@ -5,7 +5,7 @@ QuoteFancy 무작위 배경화면 적용기 — on-demand 다운로드 방식 (P
 동작 흐름:
   1. quotes_index.json 에서 무작위로 명언 1개 선택
   2. 해당 이미지가 캐시에 없으면 → 그 1장만 다운로드 (bulk 다운로드 없음)
-  3. macOS의 모든 데스크톱 배경화면으로 설정
+  3. 연결된 모든 디스플레이의 배경화면으로 설정
   4. 캐시가 max_cache_per_guru 를 초과하면 오래된 것부터 정리
 
 사용법:
@@ -75,7 +75,7 @@ def evict_cache(wallpaper_dir, max_per_guru):
 
 
 def set_wallpaper(image_path):
-    """macOS 모든 데스크톱의 배경화면을 변경."""
+    """연결된 모든 디스플레이의 배경화면을 변경."""
     abs_path = os.path.abspath(image_path)
     script = (
         'tell application "System Events" to set picture of every desktop '

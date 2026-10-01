@@ -52,6 +52,8 @@ uv run change_wallpaper.py --build-index  # 인덱스만 갱신
 
 > 처음 실행할 때 macOS가 "자동화 권한"을 요청할 수 있습니다. 배경화면을 바꾸려면 허용해 주세요.
 
+연결된 모든 디스플레이에는 같은 이미지가 한 번에 적용됩니다. Mission Control의 모든 Space에서 같은 이미지를 보려면 macOS **시스템 설정 → 배경화면 → 모든 Spaces에 표시**를 켜야 합니다. macOS Tahoe에서는 스크립트로 배경화면을 바꾼 뒤 이 설정이 꺼질 수 있습니다.
+
 ### 4. 자동 변경 등록 (launchd)
 
 ```bash
