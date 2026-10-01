@@ -3,7 +3,7 @@
 # 정해진 시간마다 배경화면을 무작위로 변경하는 launchd 에이전트를 설치한다.
 #
 # 사용법:
-#   ./install.sh              # 기본 주기 (config.json 의 change_interval_seconds)
+#   ./install.sh              # 기본 주기 (config.yaml의 change_interval_seconds)
 #   ./install.sh 600          # 600초(=10분) 주기로 재정의
 set -euo pipefail
 
@@ -18,25 +18,18 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
   exit 1
 fi
 
-# python3 경로 탐색
-PYTHON_BIN="$(command -v python3 || true)"
-if [[ -z "$PYTHON_BIN" ]]; then
-  echo "python3 를 찾을 수 없습니다. 먼저 설치하세요 (예: brew install python3)." >&2
+# uv 경로 탐색
+UV_BIN="$(command -v uv || true)"
+if [[ -z "$UV_BIN" ]]; then
+  echo "uv를 찾을 수 없습니다. 먼저 설치하세요 (예: brew install uv)." >&2
   exit 1
 fi
 
 # 변경 주기 결정
 INTERVAL="${1:-}"
 if [[ -z "$INTERVAL" ]]; then
-  # config.json 에서 change_interval_seconds 추출 (없으면 1800)
-  INTERVAL=$(python3 -c "
-import json
-try:
-    with open('${SCRIPT_DIR}/config.json') as f:
-        print(json.load(f).get('change_interval_seconds', 1800))
-except Exception:
-    print(1800)
-")
+  # config.yaml에서 change_interval_seconds 추출 (없으면 1800)
+  INTERVAL=$("$UV_BIN" run --no-project --with-requirements "${SCRIPT_DIR}/requirements.txt" python -c 'import sys, yaml; print(yaml.safe_load(open(sys.argv[1])).get("change_interval_seconds", 1800))' "${SCRIPT_DIR}/config.yaml")
 fi
 
 mkdir -p "$HOME/Library/LaunchAgents"
@@ -50,11 +43,17 @@ cat > "$PLIST_PATH" <<EOF
     <string>${LABEL}</string>
     <key>ProgramArguments</key>
     <array>
-        <string>${PYTHON_BIN}</string>
+        <string>${UV_BIN}</string>
+        <string>run</string>
+        <string>--no-project</string>
+        <string>--with-requirements</string>
+        <string>${SCRIPT_DIR}/requirements.txt</string>
         <string>${SCRIPT_DIR}/change_wallpaper.py</string>
         <string>--config</string>
-        <string>${SCRIPT_DIR}/config.json</string>
+        <string>${SCRIPT_DIR}/config.yaml</string>
     </array>
+    <key>WorkingDirectory</key>
+    <string>${SCRIPT_DIR}</string>
     <key>StartInterval</key>
     <integer>${INTERVAL}</integer>
     <key>RunAtLoad</key>

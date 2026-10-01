@@ -80,12 +80,12 @@
 ### Phase 2 — 스케줄링 (자동 주기 변경) ✅ 완료
 - [x] `launchd` plist 생성 (`install.sh`)
   - `~/Library/LaunchAgents/com.quotefancy.livewallpaper.plist`
-  - `StartInterval`로 변경 주기 지정 (config.json `change_interval_seconds`, 기본 1800초)
+  - `StartInterval`로 변경 주기 지정 (config.yaml `change_interval_seconds`, 기본 1800초)
   - `RunAtLoad` = 최초 1회 즉시 실행
 - [x] 해제 스크립트 (`uninstall.sh`)
 
 ### Phase 3 — 설정 파일 ✅ 완료
-`config.json`
+`config.yaml`
 - [x] guru slug 리스트
 - [x] 변경 주기 (`change_interval_seconds`)
 - [x] 이미지 캐시 경로 (`wallpaper_dir`)
@@ -116,11 +116,12 @@
 ```bash
 git clone https://github.com/suapapa/quotefancy-livewallpaper.git
 cd quotefancy-livewallpaper
-python3 build_index.py       # 명언 인덱스 생성 (이미지 없음, ~13초)
+brew install uv
+uv run --with-requirements requirements.txt build_index.py  # 명언 인덱스 생성 (이미지 없음, ~13초)
 ./install.sh                 # 30분마다 자동 변경 (주기 변경: ./install.sh 600)
 ```
 
-배경화면을 즉시 바꿔보려면: `python3 change_wallpaper.py`
+배경화면을 즉시 바꿔보려면: `uv run --with-requirements requirements.txt change_wallpaper.py`
 
 ---
 
@@ -130,7 +131,7 @@ python3 build_index.py       # 명언 인덱스 생성 (이미지 없음, ~13초
 ws/quotefancy-livewallpaper/
 ├── README.md
 ├── PLAN.md                 # 이 문서
-├── config.json             # guru/주기 설정
+├── config.yaml             # guru/주기 설정
 ├── scrape.py               # 명언 4K 이미지 다운로더
 ├── change_wallpaper.py     # 무작위 선택 + 배경화면 적용
 ├── install.sh              # launchd 등록

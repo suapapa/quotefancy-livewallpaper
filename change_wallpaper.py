@@ -9,9 +9,9 @@ QuoteFancy 무작위 배경화면 적용기 — on-demand 다운로드 방식 (P
   4. 캐시가 max_cache_per_guru 를 초과하면 오래된 것부터 정리
 
 사용법:
-    python3 change_wallpaper.py                    # 무작위 1장 적용
-    python3 change_wallpaper.py --list             # 인덱스에 있는 명언 수 확인
-    python3 change_wallpaper.py --build-index      # 인덱스만 갱신
+    uv run --with-requirements requirements.txt change_wallpaper.py                # 무작위 1장 적용
+    uv run --with-requirements requirements.txt change_wallpaper.py --list         # 인덱스에 있는 명언 수 확인
+    uv run --with-requirements requirements.txt change_wallpaper.py --build-index  # 인덱스만 갱신
 """
 
 import argparse
@@ -24,13 +24,9 @@ import sys
 import time
 import urllib.request
 import urllib.error
+from build_index import load_config
 
 BASE_URL = "https://quotefancy.com"
-
-
-def load_config(path="config.json"):
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
 
 
 def load_index(cfg):
@@ -107,7 +103,7 @@ def log_history(log_dir, image_path):
 
 def main():
     parser = argparse.ArgumentParser(description="QuoteFancy 무작위 배경화면 적용기")
-    parser.add_argument("--config", default="config.json")
+    parser.add_argument("--config", default="config.yaml")
     parser.add_argument("--guru", help="특정 guru만 사용")
     parser.add_argument("--list", action="store_true", help="명언 수만 출력")
     parser.add_argument("--build-index", action="store_true", help="인덱스만 갱신")

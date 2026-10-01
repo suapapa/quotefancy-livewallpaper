@@ -7,8 +7,8 @@ quotes_index.json 에 저장한다. 배경화면 변경 시 필요한 1장만 �
 on-demand 방식의 기반이 된다. (bulk 다운로드 없이 수 초면 완료)
 
 사용법:
-    python3 build_index.py                 # config.json 기준 전체 인덱스 생성
-    python3 build_index.py --guru bruce-lee-quotes
+    uv run --with-requirements requirements.txt build_index.py  # config.yaml 기준
+    uv run --with-requirements requirements.txt build_index.py --guru bruce-lee-quotes
 """
 
 import argparse
@@ -19,15 +19,16 @@ import sys
 import time
 import urllib.request
 import urllib.error
+import yaml
 
 BASE_URL = "https://quotefancy.com"
 # 이미지 URL 패턴: /media/wallpaper/800x450/{id}-{Author}-Quote-{slug}.jpg
 IMG_ID_RE = re.compile(r"/media/wallpaper/\d+x\d+/(\d+)-")
 
 
-def load_config(path="config.json"):
+def load_config(path="config.yaml"):
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        return yaml.safe_load(f)
 
 
 def fetch(url, user_agent, timeout=30):
@@ -108,13 +109,13 @@ def build_index(cfg, guru=None):
 
 def main():
     parser = argparse.ArgumentParser(description="QuoteFancy 명언 인덱스 생성기")
-    parser.add_argument("--config", default="config.json")
+    parser.add_argument("--config", default="config.yaml")
     parser.add_argument("--guru", help="특정 guru slug만 처리")
     args = parser.parse_args()
 
     cfg = load_config(args.config)
     if not args.guru and not cfg.get("gurus"):
-        print("gurus가 비어 있습니다. config.json 을 확인하세요.", file=sys.stderr)
+        print("gurus가 비어 있습니다. config.yaml을 확인하세요.", file=sys.stderr)
         sys.exit(1)
 
     print("==> 명언 인덱스 생성 중 (이미지 다운로드 없음)...")
